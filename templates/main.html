@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block content %}
+<!-- main.html  шаблон. Блок content -->
+    {% comment %} Оставим HTML коммент {% endcomment %}
+    {# Это Django коммент #}
+    <!-- Это HTML коммент -->
+    <h1>{{ title }}</h1>
+    <p>{{ text|cut:"главной"}}</p>
+    <hr>
+   {% comment %} Условия в шаблонизаторе Django {% endcomment %}
+{% if  user_status == "admin" %}
+<p>Здравствуй Админ!</p>
+{% elif user_status == "moderator" %}
+<p>Здравствуй модератор!</p>
+{% else %}
+<p>Здравствуй смертный!</p>
+{% endif %}
+
+{% comment %} Проверка на вхождение в перечень {% endcomment %}
+
+{% if user_status in "admin moderator editor" %}
+    <p>У вас есть права на редактирование</p>
+{% endif %}
+
+<p>{{group|default:"Без группы"}}</p>
+
+{% endblock %}

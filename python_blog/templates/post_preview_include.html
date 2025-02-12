@@ -1,0 +1,16 @@
+{% load filters %}
+<div class="post_gallery">
+{% for post in posts %}
+    <div class="short_post">
+        <h3><a href="{% url 'blog:post_detail' post.slug %}">{{ post.title }}</a></h3>
+        <p>
+            {% for tag in post.tags.all %}
+            <a href="{% url "blog:tag_detail" tag.slug %}">#{{tag}}</a>
+            {% endfor %}
+        </p>
+        <div>{{ post.content|truncatewords:10 }}</div>
+        <p>Просмотры: {{post.views}}</p>
+        <p>Категория: <a href="{% url "blog:category_detail" post.category.slug %}">{{post.category.name}}</a></p>
+    </div>
+{% endfor %}
+</div>

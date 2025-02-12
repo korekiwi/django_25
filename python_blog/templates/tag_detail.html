@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{title}}
+{% endblock title %}
+
+{% block content %}
+<h3>Посты по тегу {{tag.slug}}</h3>
+{% include "post_preview_include.html" %}
+{% endblock content %}

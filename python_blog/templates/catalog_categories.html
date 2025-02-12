@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{title}}
+{% endblock title %}
+
+{% block content %}
+<h3>{{title}}</h3>
+<div class="gallery">
+    {% for category in categories %}
+    <div class="category">
+        <a href="{% url "blog:category_detail" category.slug %}">{{category.name}} ({{category.posts.count}})</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

@@ -1,0 +1,7 @@
+.venv/
+*__pycache__/
+.idea/
+.vscode/launch.json
+hw_315/
+PYTHON422 HW №25.md
+.env

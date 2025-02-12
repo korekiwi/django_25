@@ -1,0 +1,5 @@
+django
+django-extensions
+mysqlclient
+unidecode
+django-debug-toolbar
