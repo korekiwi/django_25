@@ -1,1 +1,1 @@
-https://github.com/korekiwi/django_24
+https://github.com/korekiwi/django_25

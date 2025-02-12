@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.urls import reverse
-from django.db.models import Count
+from django.db.models import Count, F
 
 from posts_dataset import dataset
 from help_functions import python_slugify, python_slugify_list
@@ -18,8 +18,6 @@ CATEGORIES = [
 
 
 def main(request):
-    # catalog_categories_url = reverse("blog:categories")
-    # catalog_tags_url = reverse("blog:tags")
 
     context = {
         "title": "Главная страница",
@@ -50,10 +48,18 @@ def catalog_posts(request):
 
 
 def post_detail(request, post_slug):
-    post = Post.objects.select_related("category", "author").prefetch_related("tags").filter(slug=post_slug)
+    post = Post.objects.select_related("category", "author").prefetch_related("tags").get(slug=post_slug)
+
+    session = request.session
+    key = f"viewed_posts_{post.id}"
+
+    if key not in session:
+        Post.objects.filter(id=post.id).update(views=F("views") + 1)
+        session[key] = True
+        post.refresh_from_db()
+
     context = {
-        "post": get_object_or_404(post),
-        # "post": Post.objects.get(slug=post_slug),
+        "post": post,
         }
     return render(request, "post_detail.html", context)
 
@@ -77,20 +83,6 @@ def category_detail(request, category_slug):
 
     return render(request, "category_detail.html", context)
 
-    # category = [cat for cat in CATEGORIES if cat["slug"] == category_slug][0]
-    #
-    # if category:
-    #     name = category["name"]
-    # else:
-    #     name = category_slug
-    #
-    # return HttpResponse(
-    #     f"""
-    #     <h1>Категория: {name}</h1>
-    #     <p><a href="{reverse('blog:categories')}">Назад к категориям</a></p>
-    # """
-    # )
-
 
 def catalog_tags(request):
     context = {
@@ -102,11 +94,6 @@ def catalog_tags(request):
 
 
 def tag_detail(request, tag_slug):
-    # posts = []
-
-    # for post in Post.objects.all():
-    #     if tag_slug in python_slugify_list(post.tags):
-    #         posts.append(post)
     tag = Tag.objects.get(slug=tag_slug)
     posts = tag.posts.select_related('category', 'author').prefetch_related('tags').all()
 
