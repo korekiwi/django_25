@@ -5,5 +5,40 @@
 {% endblock title %}
 
 {% block content %}
+
+<form method="GET" action="{% url "blog:posts" %}">
+    <div>
+        <input type="text" name="search_query" placeholder="Поиск по блогу..." value="{{ request.GET.search_query|default:'' }}">
+        <button type="submit">Искать</button>
+    </div>
+
+    <div>
+        Критерии поиска:
+        <input type="checkbox" name="search_text" id="search_text" value='1' {% if request.GET.search_text == '1' or not request.GET.search_title %}checked{% endif %}>
+        <label for="search_text">Искать в тексте</label>
+        <input type="checkbox" name="search_title" id="search_title" value='1' {% if request.GET.search_title == '1' %}checked{% endif %}>
+        <label for="search_title">Искать в заголовках<label>
+    </div>
+
+    <div>
+        Сортировать:
+        <input type="radio" name="sort_by" id="sort_created" value="created_date" {% if request.GET.sort_by == "created_date" or not request.GET.sort_by  %}checked{% endif %}>
+        <label for="sort_created">По дате создания</label>
+        <input type="radio" name="sort_by" id="sort_updated" value="updated_date" {% if request.GET.sort_by == "updated_date" %}checked{% endif %}>
+        <label for="sort_updated">По дате обновления</label>
+        <input type="radio" name="sort_by" id="sort_views" value="views" {% if request.GET.sort_by == "views"%}checked{% endif %}>
+        <label for="sort_views">По количеству просмотров</label>
+    </div>
+</form>
+
 {% include "post_preview_include.html" %}
+
+{% if posts.has_previous %}
+    <a href="?page={{ posts.previous_page_number }}"> <= Предыдущая</a> <br>
+{% endif %}
+{% if posts.has_next %}
+    <a href="?page={{ posts.next_page_number }}">Следующая => </a>
+{% endif %}
+<br>
+
 {% endblock content %}
